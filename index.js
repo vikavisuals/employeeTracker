@@ -14,3 +14,24 @@ connection.connect(function(err) {
   console.log("connected as id " + connection.threadId + "\n");
   start();
 });
+
+function start() {
+  inquirer.prompt( {
+      name: "mainMenu",
+      type: "list",
+      message: "What would you like to do?",
+      choices: ['View All Employees', 'Add Employee', 'Remove Employee']
+    }).then(function(res) {
+      switch(res.mainMenu) {
+          case 'View All Employees':
+              view();
+              break;
+          case 'Add Employee':
+              add();
+              break;
+          case 'Remove Employee':
+              remove();
+              break;
+      }
+});
+}
