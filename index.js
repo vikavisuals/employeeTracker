@@ -24,7 +24,7 @@ function start() {
     }).then(function(res) {
       switch(res.mainMenu) {
           case 'View All Employees':
-              view();
+              viewAll();
               break;
           case 'Add Employee':
               add();
@@ -34,4 +34,11 @@ function start() {
               break;
       }
 });
-}
+};
+
+function viewAll() {
+  connection.query("SELECT * FROM employee", function(err, res) {
+    if (err) throw err;
+    console.log(res);
+  });
+};
