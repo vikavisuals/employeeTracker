@@ -1,2 +1,0 @@
-var inquirer = require("inquirer");
-
