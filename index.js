@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
+// MySQL localhost info
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -9,12 +10,13 @@ var connection = mysql.createConnection({
   database: "employeeTracker_db"
 });
 
+// Upon connection, Start function is booted up
 connection.connect(function (err) {
   if (err) throw err;
-  console.log("connected as id " + connection.threadId + "\n");
   start();
 });
 
+// Generates the main menu when starting app
 function start() {
   inquirer.prompt({
     name: "mainMenu",
@@ -36,6 +38,7 @@ function start() {
   });
 };
 
+// Views all existing employees
 function viewAll() {
   connection.query("SELECT * FROM employee", function (err, res) {
     if (err) throw err;
@@ -44,7 +47,7 @@ function viewAll() {
   });
 };
 
-
+// Adds a new employee
 function add() {
   inquirer.prompt([{
     name: 'firstName',
@@ -56,15 +59,13 @@ function add() {
     message: "Last Name:"
   }]
   ).then(function (res) {
-
     connection.query(
       `INSERT INTO employee (first_name, last_name) VALUES ('${res.firstName}', '${res.lastName}')`,
-
       function (err, res) {
         if (err) throw err;
         console.log("Employee added")
         start();
       });
-
   });
 };
+
