@@ -1,3 +1,3 @@
-var mysql = require("./mysql.js");
-var inquirer = require("./inquirer.js");
+var mysql = require("./js/mysql.js");
+var inquirer = require("./js/inquirer.js");
 
