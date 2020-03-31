@@ -22,24 +22,30 @@ function start() {
     name: "mainMenu",
     type: "list",
     message: "What would you like to do?",
-    choices: ['View All Employees', 'Add Employee', 'Remove Employee']
+    choices: ['View All Employees', 'View All Departments', 'View All Roles', 'Add Employee', 'Remove Employee']
   }).then(function (res) {
     switch (res.mainMenu) {
       case 'View All Employees':
-        viewAll();
+        viewEmployees();
+        break;
+      case 'View All Departments':
+        viewDepartments();
+        break;
+      case 'View All Roles':
+        viewRoles();
         break;
       case 'Add Employee':
-        add();
+        addEmployee();
         break;
       case 'Remove Employee':
-        remove();
+        removeEmployee();
         break;
     }
   });
 };
 
 // Views all existing employees
-function viewAll() {
+function viewEmployees() {
   connection.query("SELECT * FROM employee", function (err, res) {
     if (err) throw err;
     console.log(res);
@@ -47,8 +53,26 @@ function viewAll() {
   });
 };
 
+// Views all existing departments
+function viewDepartments() {
+  connection.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err;
+    console.log(res);
+    start();
+  });
+};
+
+// Views all existing roles
+function viewRoles() {
+  connection.query("SELECT * FROM role", function (err, res) {
+    if (err) throw err;
+    console.log(res);
+    start();
+  });
+};
+
 // Adds a new employee
-function add() {
+function addEmployee() {
   inquirer.prompt([{
     name: 'firstName',
     type: 'input',
@@ -70,7 +94,7 @@ function add() {
 };
 
 // Deletes an existing employee
-function remove() {
+function removeEmployee() {
   connection.query('SELECT * FROM employee', (err, employee) => {
     const list = employee.map(employee => `${employee.first_name} ${employee.last_name}`)
     inquirer.prompt({

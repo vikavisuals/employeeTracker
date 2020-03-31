@@ -25,3 +25,5 @@ CREATE TABLE employee (
   manager_id INTEGER NOT NULL,
   PRIMARY KEY (id)
 );
+
+SELECT * FROM employee;
