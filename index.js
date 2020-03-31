@@ -63,9 +63,36 @@ function add() {
       `INSERT INTO employee (first_name, last_name) VALUES ('${res.firstName}', '${res.lastName}')`,
       function (err, res) {
         if (err) throw err;
-        console.log("Employee added")
+        console.log("EMPLOYEE ADDED")
         start();
       });
   });
 };
 
+// Deletes an existing employee
+function remove() {
+  connection.query('SELECT * FROM employee', (err, employee) => {
+    const list = employee.map(employee => `${employee.first_name} ${employee.last_name}`)
+    inquirer.prompt({
+      name: 'delete',
+      type: 'list',
+      message: "Who would you like to remove?",
+      choices: list
+    })
+      .then(function (res) {
+        let employeeID;
+        list.forEach((item, i) => {
+          if (item === res.delete) {
+            employeeID = employee[i].id;
+          }
+        })
+        connection.query(
+          `DELETE FROM employee WHERE id = "${employeeID}"`,
+          function (err, res) {
+            if (err) throw err;
+            console.log("EMPLOYEE REMOVED")
+            start();
+          });
+      });
+  });
+};
