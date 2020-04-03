@@ -23,7 +23,7 @@ function start() {
     name: "mainMenu",
     type: "list",
     message: "What would you like to do?",
-    choices: ['View All Employees', 'View All Departments', 'View All Roles', 'Add Employee', 'Add Department', 'Add Role', 'Remove Employee']
+    choices: ['View All Employees', 'View All Departments', 'View All Roles', 'Add Employee', 'Add Department', 'Add Role', 'Remove Employee', 'Remove Department', 'Remove Role']
   }).then(function (res) {
     switch (res.mainMenu) {
       case 'View All Employees':
@@ -46,6 +46,12 @@ function start() {
         break;
       case 'Remove Employee':
         removeEmployee();
+        break;
+        case 'Remove Department':
+        removeDepartment();
+        break;
+        case 'Remove Role':
+        removeRole();
         break;
     }
   });
@@ -163,6 +169,62 @@ function removeEmployee() {
           function (err, res) {
             if (err) throw err;
             console.log("EMPLOYEE REMOVED")
+            start();
+          });
+      });
+  });
+};
+
+// Deletes an existing department
+function removeDepartment() {
+  connection.query('SELECT * FROM department', (err, department) => {
+    const list = department.map(department => `${department.name}`)
+    inquirer.prompt({
+      name: 'delete',
+      type: 'list',
+      message: "Which department would you like to remove?",
+      choices: list
+    })
+      .then(function (res) {
+        let departmentID;
+        list.forEach((item, i) => {
+          if (item === res.delete) {
+            departmentID = department[i].id;
+          }
+        })
+        connection.query(
+          `DELETE FROM department WHERE id = "${departmentID}"`,
+          function (err, res) {
+            if (err) throw err;
+            console.log("DEPARTMENT REMOVED")
+            start();
+          });
+      });
+  });
+};
+
+// Deletes an existing role
+function removeRole() {
+  connection.query('SELECT * FROM role', (err, role) => {
+    const list = role.map(role => `${role.title}, ${role.salary}`)
+    inquirer.prompt({
+      name: 'delete',
+      type: 'list',
+      message: "Which role would you like to remove?",
+      choices: list
+    })
+      .then(function (res) {
+        let roleID;
+        list.forEach((item, i) => {
+          if (item === res.delete) {
+            roleID = role[i].id;
+          }
+        })
+        connection.query(
+          `DELETE FROM role WHERE id = "${roleID}"`,
+          function (err, res) {
+            if (err) throw err;
+            console.log("ROLE REMOVED")
             start();
           });
       });
