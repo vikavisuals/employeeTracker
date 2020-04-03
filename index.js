@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+const cTable = require('console.table');
 
 // MySQL localhost info
 var connection = mysql.createConnection({
@@ -22,7 +23,7 @@ function start() {
     name: "mainMenu",
     type: "list",
     message: "What would you like to do?",
-    choices: ['View All Employees', 'View All Departments', 'View All Roles', 'Add Employee', 'Remove Employee']
+    choices: ['View All Employees', 'View All Departments', 'View All Roles', 'Add Employee', 'Add Department', 'Add Role', 'Remove Employee']
   }).then(function (res) {
     switch (res.mainMenu) {
       case 'View All Employees':
@@ -36,6 +37,12 @@ function start() {
         break;
       case 'Add Employee':
         addEmployee();
+        break;
+      case 'Add Department':
+        addDepartment();
+        break;
+        case 'Add Role':
+        addRole();
         break;
       case 'Remove Employee':
         removeEmployee();
@@ -88,6 +95,47 @@ function addEmployee() {
       function (err, res) {
         if (err) throw err;
         console.log("EMPLOYEE ADDED")
+        start();
+      });
+  });
+};
+
+// Adds a new department
+function addDepartment() {
+  inquirer.prompt([{
+    name: 'department',
+    type: 'input',
+    message: "Department Name:"
+  }]
+  ).then(function (res) {
+    connection.query(
+      `INSERT INTO department (name) VALUES ('${res.department}')`,
+      function (err, res) {
+        if (err) throw err;
+        console.log("DEPARTMENT ADDED")
+        start();
+      });
+  });
+};
+
+// Adds a new role
+function addRole() {
+  inquirer.prompt([{
+    name: 'title',
+    type: 'input',
+    message: "Title:"
+  },
+  {
+    name: 'salary',
+    type: 'input',
+    message: "Salary:"
+  }]
+  ).then(function (res) {
+    connection.query(
+      `INSERT INTO role (title, salary) VALUES ('${res.title}', '${res.salary}')`,
+      function (err, res) {
+        if (err) throw err;
+        console.log("ROLE ADDED")
         start();
       });
   });
