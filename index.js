@@ -1,9 +1,9 @@
-var mysql = require("mysql");
-var inquirer = require("inquirer");
+const mysql = require("mysql");
+const inquirer = require("inquirer");
 const cTable = require('console.table');
 
 // MySQL localhost info
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
@@ -41,16 +41,16 @@ function start() {
       case 'Add Department':
         addDepartment();
         break;
-        case 'Add Role':
+      case 'Add Role':
         addRole();
         break;
       case 'Remove Employee':
         removeEmployee();
         break;
-        case 'Remove Department':
+      case 'Remove Department':
         removeDepartment();
         break;
-        case 'Remove Role':
+      case 'Remove Role':
         removeRole();
         break;
     }
@@ -86,23 +86,47 @@ function viewRoles() {
 
 // Adds a new employee
 function addEmployee() {
-  inquirer.prompt([{
-    name: 'firstName',
-    type: 'input',
-    message: "First Name:"
-  }, {
-    name: 'lastName',
-    type: 'input',
-    message: "Last Name:"
-  }]
-  ).then(function (res) {
-    connection.query(
-      `INSERT INTO employee (first_name, last_name) VALUES ('${res.firstName}', '${res.lastName}')`,
-      function (err, res) {
-        if (err) throw err;
-        console.log("EMPLOYEE ADDED")
-        start();
+  connection.query('SELECT * FROM department', (err, department) => {
+    if (err) throw err;
+    const dept = department.map(department => `${department.name}`);
+    connection.query('SELECT * FROM role', (err, role) => {
+      if (err) throw err;
+      const job = role.map(role => `${role.title}`);
+      const money = role.map(role => `${role.salary}`);
+      inquirer.prompt([{
+        name: 'firstName',
+        type: 'input',
+        message: "First Name:"
+      }, {
+        name: 'lastName',
+        type: 'input',
+        message: "Last Name:"
+      }, {
+        name: 'department',
+        type: 'list',
+        message: "Department:",
+        choices: dept
+      }, {
+        name: 'role',
+        type: 'list',
+        message: "Role:",
+        choices: job
+      }, {
+        name: 'salary',
+        type: 'list',
+        message: "Salary:",
+        choices: money
+      }]
+      ).then(function (res) {
+        connection.query(
+          `INSERT INTO employee (first_name, last_name, department, role, salary) VALUES ('${res.firstName}', '${res.lastName}','${res.department}', '${res.role}', '${res.salary}')`,
+          function (err, res) {
+            if (err) throw err;
+            console.log("EMPLOYEE ADDED")
+            start();
+          });
       });
+    });
   });
 };
 
